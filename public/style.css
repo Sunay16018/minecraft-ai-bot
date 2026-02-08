@@ -1,0 +1,319 @@
+/* Değişkenler */
+:root {
+    --arkaplan-ana: #131314;
+    --arkaplan-ikincil: #1e1e20;
+    --arkaplan-ucuncu: #2d2d30;
+    --yazi-ana: #e8eaed;
+    --yazi-ikincil: #9aa0a6;
+    --vurgu-mavi: #8ab4f8;
+    --vurgu-yesil: #81c995;
+    --vurgu-mor: #c58af9;
+    --kenar-yaricap: 24px;
+    --bosluk-kucuk: 8px;
+    --bosluk-orta: 16px;
+    --bosluk-buyuk: 24px;
+}
+
+/* Sıfırlama ve Temel */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--arkaplan-ana);
+    color: var(--yazi-ana);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Üst Bilgi */
+.ust-bilgi {
+    padding: var(--bosluk-orta);
+    border-bottom: 1px solid var(--arkaplan-ucuncu);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--bosluk-kucuk);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.logo i {
+    color: var(--vurgu-mavi);
+}
+
+/* Durum Göstergesi */
+.durum-gostergesi {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.durum-hazir {
+    background-color: #5f6368;
+}
+
+.durum-baglanıyor {
+    background-color: #f29900;
+}
+
+.durum-bagli {
+    background-color: var(--vurgu-yesil);
+}
+
+/* Ana Konteyner */
+.ana-konteyner {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Yan Panel */
+.yan-panel {
+    width: 300px;
+    border-right: 1px solid var(--arkaplan-ucuncu);
+    padding: var(--bosluk-orta);
+    display: flex;
+    flex-direction: column;
+    gap: var(--bosluk-orta);
+}
+
+/* Paneller */
+.panel {
+    background-color: var(--arkaplan-ikincil);
+    border-radius: var(--kenar-yaricap);
+    padding: var(--bosluk-orta);
+}
+
+.panel-baslik {
+    font-size: 1.1rem;
+    margin-bottom: var(--bosluk-orta);
+    display: flex;
+    align-items: center;
+    gap: var(--bosluk-kucuk);
+}
+
+/* Giriş Alanları */
+.giris-grubu {
+    margin-bottom: var(--bosluk-orta);
+}
+
+.giris-etiket {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--yazi-ikincil);
+    font-size: 0.9rem;
+}
+
+.giris-alani {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--arkaplan-ucuncu);
+    border: 1px solid #3c4043;
+    border-radius: 12px;
+    color: var(--yazi-ana);
+    font-size: 1rem;
+}
+
+.giris-alani:focus {
+    outline: none;
+    border-color: var(--vurgu-mavi);
+}
+
+/* Butonlar */
+.btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+    width: 100%;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-ana {
+    background-color: var(--vurgu-mavi);
+    color: var(--arkaplan-ana);
+}
+
+.btn-ikincil {
+    background-color: var(--arkaplan-ucuncu);
+    color: var(--yazi-ana);
+    margin-top: var(--bosluk-kucuk);
+}
+
+/* Sistem Logları */
+.log-konteyneri {
+    height: 200px;
+    overflow-y: auto;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9rem;
+}
+
+.log-girdisi {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--arkaplan-ucuncu);
+    font-size: 0.85rem;
+}
+
+/* Sohbet Alanı */
+.sohbet-konteyneri {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--bosluk-orta);
+}
+
+.sohbet-mesajlari {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--bosluk-orta);
+    display: flex;
+    flex-direction: column;
+    gap: var(--bosluk-orta);
+}
+
+/* Mesajlar */
+.mesaj {
+    max-width: 80%;
+    padding: var(--bosluk-orta);
+    border-radius: var(--kenar-yaricap);
+    line-height: 1.5;
+}
+
+.mesaj-kullanici {
+    background-color: var(--vurgu-mavi);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.mesaj-asistan {
+    background-color: var(--arkaplan-ikincil);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.mesaj-sistem {
+    background-color: var(--arkaplan-ucuncu);
+    align-self: center;
+    font-style: italic;
+    max-width: 90%;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Mesaj Gönderme */
+.mesaj-gonder-alani {
+    display: flex;
+    gap: var(--bosluk-orta);
+    padding: var(--bosluk-orta);
+    background-color: var(--arkaplan-ikincil);
+    border-radius: var(--kenar-yaricap);
+    margin-top: var(--bosluk-orta);
+}
+
+.sohbet-girdisi {
+    flex: 1;
+    padding: 16px;
+    background-color: var(--arkaplan-ucuncu);
+    border: 1px solid #3c4043;
+    border-radius: 24px;
+    color: var(--yazi-ana);
+    font-size: 1rem;
+    resize: none;
+    height: 56px;
+    font-family: inherit;
+}
+
+.sohbet-girdisi:focus {
+    outline: none;
+    border-color: var(--vurgu-mavi);
+}
+
+.gonder-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--vurgu-mor), var(--vurgu-mavi));
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 20px rgba(138, 180, 248, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.gonder-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(138, 180, 248, 0.6);
+}
+
+.gonder-btn:active {
+    transform: scale(0.98);
+}
+
+/* Yazıyor Göstergesi */
+.yaziyor-gostergesi {
+    display: none;
+    padding: 12px;
+    color: var(--yazi-ikincil);
+    font-style: italic;
+    text-align: center;
+}
+
+.yaziyor-noktalar::after {
+    content: '...';
+    animation: noktalar 1.5s infinite;
+}
+
+@keyframes noktalar {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .ana-konteyner {
+        flex-direction: column;
+    }
+    
+    .yan-panel {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--arkaplan-ucuncu);
+    }
+    
+    .log-konteyneri {
+        height: 150px;
+    }
+    
+    .mesaj {
+        max-width: 90%;
+    }
+  }
