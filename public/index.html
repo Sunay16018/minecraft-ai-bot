@@ -1,1 +1,240 @@
-
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Minecraft AI Bot</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Üst Bilgi -->
+    <div class="ust-bilgi">
+        <div class="logo">
+            <i class="fas fa-robot"></i>
+            <span>Gemini Minecraft AI</span>
+        </div>
+        <div id="durumGostergesi" class="durum-gostergesi durum-hazir">
+            <i class="fas fa-circle"></i>
+            <span>HAZIR</span>
+        </div>
+    </div>
+    
+    <!-- Ana İçerik -->
+    <div class="ana-konteyner">
+        <!-- Yan Panel -->
+        <div class="yan-panel">
+            <!-- Bağlantı Paneli -->
+            <div class="panel">
+                <div class="panel-baslik">
+                    <i class="fas fa-server"></i>
+                    <span>Minecraft Bağlantısı</span>
+                </div>
+                
+                <div class="giris-grubu">
+                    <label class="giris-etiket">Sunucu IP</label>
+                    <input type="text" id="serverIp" class="giris-alani" placeholder="localhost" value="localhost">
+                </div>
+                
+                <div class="giris-grubu">
+                    <label class="giris-etiket">Kullanıcı Adı</label>
+                    <input type="text" id="kullaniciAdi" class="giris-alani" placeholder="GeminiBot" value="GeminiBot">
+                </div>
+                
+                <div class="giris-grubu">
+                    <label class="giris-etiket">Versiyon</label>
+                    <input type="text" id="versiyon" class="giris-alani" placeholder="1.20.1" value="1.20.1">
+                </div>
+                
+                <button id="baglanBtn" class="btn btn-ana">
+                    <i class="fas fa-plug"></i>
+                    <span>Minecraft'a Bağlan</span>
+                </button>
+                
+                <button id="baglantiKesBtn" class="btn btn-ikincil">
+                    <i class="fas fa-power-off"></i>
+                    <span>Bağlantıyı Kes</span>
+                </button>
+            </div>
+            
+            <!-- Sistem Log Paneli -->
+            <div class="panel">
+                <div class="panel-baslik">
+                    <i class="fas fa-terminal"></i>
+                    <span>Sistem Logları</span>
+                </div>
+                <div id="sistemLog" class="log-konteyneri"></div>
+            </div>
+        </div>
+        
+        <!-- Sohbet Alanı -->
+        <div class="sohbet-konteyneri">
+            <!-- Mesajlar -->
+            <div id="sohbetMesajlari" class="sohbet-mesajlari">
+                <div class="mesaj mesaj-sistem">
+                    Gemini Minecraft AI'ya hoş geldiniz! Bir Minecraft sunucusuna bağlanın, ardından bana "odun kes", "beni takip et" gibi komutlar verebilirsiniz.
+                </div>
+            </div>
+            
+            <!-- Yazıyor Göstergesi -->
+            <div id="yaziyorGostergesi" class="yaziyor-gostergesi">
+                Gemini düşünüyor <span class="yaziyor-noktalar"></span>
+            </div>
+            
+            <!-- Mesaj Gönderme -->
+            <div class="mesaj-gonder-alani">
+                <textarea 
+                    id="sohbetGirdisi" 
+                    class="sohbet-girdisi" 
+                    placeholder="Komutunuzu buraya yazın... (Örn: '5 meşe odunu kes', 'beni takip et')" 
+                    rows="1"
+                ></textarea>
+                <button id="gonderBtn" class="gonder-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Socket.io & Özel JS -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Socket.io bağlantısı
+        const socket = io();
+        
+        // DOM Elementleri
+        const sohbetMesajlari = document.getElementById('sohbetMesajlari');
+        const sohbetGirdisi = document.getElementById('sohbetGirdisi');
+        const gonderBtn = document.getElementById('gonderBtn');
+        const sistemLog = document.getElementById('sistemLog');
+        const durumGostergesi = document.getElementById('durumGostergesi');
+        const baglanBtn = document.getElementById('baglanBtn');
+        const baglantiKesBtn = document.getElementById('baglantiKesBtn');
+        const yaziyorGostergesi = document.getElementById('yaziyorGostergesi');
+        
+        // Textarea otomatik yükseklik
+        sohbetGirdisi.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Enter ile mesaj gönderme
+        sohbetGirdisi.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                mesajGonder();
+            }
+        });
+        
+        // Gönder butonu
+        gonderBtn.addEventListener('click', mesajGonder);
+        
+        // Bağlan butonu
+        baglanBtn.addEventListener('click', () => {
+            const serverIp = document.getElementById('serverIp').value;
+            const kullaniciAdi = document.getElementById('kullaniciAdi').value;
+            const versiyon = document.getElementById('versiyon').value;
+            
+            if (!serverIp || !kullaniciAdi || !versiyon) {
+                sistemMesajiEkle('Lütfen tüm bağlantı alanlarını doldurun');
+                return;
+            }
+            
+            socket.emit('minecraft-baglan', {
+                serverIp,
+                kullaniciAdi,
+                versiyon
+            });
+        });
+        
+        // Bağlantı kes butonu
+        baglantiKesBtn.addEventListener('click', () => {
+            if (confirm('Bağlantıyı kesmek istediğinize emin misiniz?')) {
+                socket.emit('disconnect-minecraft');
+            }
+        });
+        
+        // Socket.io Olayları
+        socket.on('connect', () => {
+            sistemMesajiEkle('Sunucuya bağlandı');
+        });
+        
+        socket.on('bot-durumu', (durum) => {
+            durumGuncelle(durum);
+        });
+        
+        socket.on('sohbet-mesajı', (mesaj) => {
+            sohbetMesajiEkle(mesaj.rol, mesaj.içerik);
+        });
+        
+        socket.on('sistem-mesajı', (mesaj) => {
+            sistemMesajiEkle(mesaj);
+        });
+        
+        socket.on('sohbet-geçmişi', (geçmiş) => {
+            // Hoş geldin mesajı dışındakileri temizle
+            while (sohbetMesajlari.children.length > 1) {
+                sohbetMesajlari.removeChild(sohbetMesajlari.lastChild);
+            }
+            
+            // Geçmişi ekle
+            geçmiş.forEach(msg => {
+                sohbetMesajiEkle(msg.rol, msg.içerik, false);
+            });
+        });
+        
+        socket.on('disconnect', () => {
+            sistemMesajiEkle('Sunucu bağlantısı kesildi');
+            durumGuncelle('HAZIR');
+        });
+        
+        // Yardımcı Fonksiyonlar
+        function mesajGonder() {
+            const mesaj = sohbetGirdisi.value.trim();
+            if (!mesaj) return;
+            
+            sohbetMesajiEkle('kullanici', mesaj);
+            sohbetGirdisi.value = '';
+            sohbetGirdisi.style.height = 'auto';
+            
+            // Yazıyor göstergesini göster
+            yaziyorGostergesi.style.display = 'block';
+            
+            socket.emit('ai-komut', { komut: mesaj });
+        }
+        
+        function sohbetMesajiEkle(rol, içerik, kaydır = true) {
+            const mesajDiv = document.createElement('div');
+            mesajDiv.className = `mesaj mesaj-${rol}`;
+            mesajDiv.textContent = içerik;
+            
+            sohbetMesajlari.appendChild(mesajDiv);
+            
+            // Yazıyor göstergesini gizle
+            yaziyorGostergesi.style.display = 'none';
+            
+            if (kaydır) {
+                sohbetMesajlari.scrollTop = sohbetMesajlari.scrollHeight;
+            }
+        }
+        
+        function sistemMesajiEkle(mesaj) {
+            const logGirdisi = document.createElement('div');
+            logGirdisi.className = 'log-girdisi';
+            logGirdisi.textContent = `[${new Date().toLocaleTimeString('tr-TR')}] ${mesaj}`;
+            
+            sistemLog.appendChild(logGirdisi);
+            sistemLog.scrollTop = sistemLog.scrollHeight;
+        }
+        
+        function durumGuncelle(durum) {
+            durumGostergesi.className = `durum-gostergesi durum-${durum.toLowerCase()}`;
+            durumGostergesi.innerHTML = `<i class="fas fa-circle"></i><span>${durum}</span>`;
+        }
+        
+        // Başlangıç ayarları
+        durumGuncelle('HAZIR');
+        sistemMesajiEkle('Sistem başlatıldı. Bağlanmaya hazır.');
+    </script>
+</body>
+  </html>
