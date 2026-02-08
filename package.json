@@ -1,7 +1,6 @@
 {
-  "name": "mc-gemini-self-coding",
-  "version": "2.0.0",
-  "description": "Full AI Minecraft Bot",
+  "name": "mc-ai-web-controller",
+  "version": "3.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -13,6 +12,7 @@
     "mineflayer-pvp": "^1.3.2",
     "mineflayer-auto-eat": "^3.3.1",
     "@google/generative-ai": "^0.21.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
   }
 }
